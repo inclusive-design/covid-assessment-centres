@@ -58,7 +58,6 @@ function generateDataFileName(date) {
 };
 
 /**
- * FIXME: this method of checking doesn't work anymore, since we have restructured the data repository
  * Check whether a given version of the data is in the repository
  * @param {string} dataFileName the name of the file to look for
  * @param {string} dataFileFolder the folder where data files are located
@@ -74,13 +73,16 @@ async function downloadDataFile(downloadURL, targetFileName) {
 	fs.writeFileSync(targetFileName, res.data, "utf8");
 };
 
-// Main script
-let { downloadURL, date } = await getDataSource(config);
-let dataFileName = generateDataFileName(date);
-if (hasNewDataFile(dataFileName, dataFileFolder)) {
-	await downloadDataFile(downloadURL, path.join(dataFileFolder, dataFileName));
-	fs.writeFileSync(path.join(dataFileFolder, "latest.json"), latestFileTemplate.replace("$filename", dataFileName), "utf8");
-	console.log("Done: The new data file: ", dataFileName);
-} else {
-	console.log("Done: No new data file");
-}
+async function main() {
+	let { downloadURL, date } = await getDataSource(config);
+	let dataFileName = generateDataFileName(date);
+	if (hasNewDataFile(dataFileName, dataFileFolder)) {
+		await downloadDataFile(downloadURL, path.join(dataFileFolder, dataFileName));
+		fs.writeFileSync(path.join(dataFileFolder, "latest.json"), latestFileTemplate.replace("$filename", dataFileName), "utf8");
+		console.log("Done: The new data file: ", dataFileName);
+	} else {
+		console.log("Done: No new data file");
+	}
+};
+
+main();
