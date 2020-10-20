@@ -2,7 +2,7 @@ name: Pull in new data files published at https://data.ontario.ca
 
 on:
   schedule:
-    cron: '*/30 * * * *'
+    - cron: '*/30 * * * *'
 
 jobs:
   build:
