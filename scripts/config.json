@@ -1,0 +1,4 @@
+{
+	"dataSourceURL": "https://data.ontario.ca/dataset/covid-19-assessment-centre-locations",
+	"localDataFileFolder": "../ODC/"
+}
