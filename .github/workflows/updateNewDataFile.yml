@@ -1,8 +1,8 @@
-name: Pull in published new data files
+name: Pull in new data files published at https://data.ontario.ca
 
 on:
-  push:
-    branches: [ auto-update-script ]
+  schedule:
+    cron: '*/30 * * * *'
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
     - name: Create local changes
       run: npm run update
 
-    - name: Commit files
+    - name: Commit new data files and the updated latest.json
       run: |
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"

@@ -1,3 +1,7 @@
+// This script checks if a new data file is published on the data source URL, which is defined
+// in the ./config.json. If there is, it downloads the file, writes into a local file and updates
+// the corresponding latest.json.
+
 const path = require("path");
 const fs = require("fs");
 const axios = require("axios");
@@ -8,12 +12,15 @@ const config = require("./config.json");
 const dataFileFolder = path.join(__dirname, config.localDataFileFolder);
 const latestFileTemplate = "{\n  \"fileName\": \"$filename\"\n}\n";
 
-/*
+/**
  * Scrape the download link and date of last update from the ODS repository page
+ * @param {string} dataSourceURL The URL to the webpage where the information of the data file is published
+ * @returns {Object} An object keyed by "downloadURL" (the url to download the new data file) and
+ * "date" (the last updated date of the data file).
  */
-async function getDataSource(config) {
+async function getDataSource(dataSourceURL) {
 
-	let res = await axios.get(config.dataSourceURL);
+	let res = await axios.get(dataSourceURL);
 	let data = res.data;
 	let dom = new JSDOM(data);
 
@@ -50,8 +57,8 @@ async function getDataSource(config) {
 
 /**
  * Generate the name for a data file based on the date it was uploaded
- * @param {string} date the date the file was uploaded, in ISO 8601 format (YYYY-MM-DD)
- * @returns filename in format assessment_centre_locations_YYYY_MM_DD.csv
+ * @param {String} date The date the file was uploaded, in ISO 8601 format (YYYY-MM-DD)
+ * @returns {String} The filename in format assessment_centre_locations_YYYY_MM_DD.csv
  */
 function generateDataFileName(date) {
 	return "assessment_centre_locations_" + date.replace(/-/g, "_") + ".csv";
@@ -59,22 +66,28 @@ function generateDataFileName(date) {
 
 /**
  * Check whether a given version of the data is in the repository
- * @param {string} dataFileName the name of the file to look for
- * @param {string} dataFileFolder the folder where data files are located
- * @returns true if the file name is already present in the versions folder, false if not
+ * @param {String} dataFileName The name of the file to look for
+ * @param {String} dataFileFolder The folder where all data files are located
+ * @returns true if the file name is already present in the data folder, false if not
  */
 function hasNewDataFile(dataFileName, dataFileFolder) {
 	let allFiles = fs.readdirSync(dataFileFolder);
 	return !allFiles.includes(dataFileName);
 };
 
-async function downloadDataFile(downloadURL, targetFileName) {
+/**
+ * Download a file from the given download URL and write into a target local file.
+ * @param {String} downloadURL The download URL
+ * @param {String} targetFileLocation The target file location including the path and file name
+ */
+async function downloadDataFile(downloadURL, targetFileLocation) {
 	let res = await axios.get(downloadURL);
-	fs.writeFileSync(targetFileName, res.data, "utf8");
+	fs.writeFileSync(targetFileLocation, res.data, "utf8");
 };
 
+// The main function
 async function main() {
-	let { downloadURL, date } = await getDataSource(config);
+	let { downloadURL, date } = await getDataSource(config.dataSourceURL);
 	let dataFileName = generateDataFileName(date);
 	if (hasNewDataFile(dataFileName, dataFileFolder)) {
 		await downloadDataFile(downloadURL, path.join(dataFileFolder, dataFileName));
