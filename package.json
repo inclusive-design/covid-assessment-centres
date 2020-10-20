@@ -4,7 +4,7 @@
   "description": "Automatically detect data changes from the web and issue a pull request to a backing github repository",
   "main": "update.js",
   "scripts": {
-		"update": "node scripts/update.js",
+    "update": "node scripts/update.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Inclusive Design Research Centre",
