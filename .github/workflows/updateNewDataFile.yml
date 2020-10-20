@@ -23,6 +23,7 @@ jobs:
       run: |
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"
+        git add ODC/*
         git commit -m "feat: add a published new data file from https://data.ontario.ca" -a
 
     - name: Push changes
