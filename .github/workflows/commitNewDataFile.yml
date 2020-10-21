@@ -1,11 +1,11 @@
-name: Pull in new data files published at https://data.ontario.ca
+name: Commit new data files published at https://data.ontario.ca
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: "*/10 * * * *"
 
 jobs:
-  build:
+  commitDataFile:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
