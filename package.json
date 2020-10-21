@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "description": "Automatically detect data changes from the web, download and commit into this repository",
   "scripts": {
-    "update": "node scripts/update.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "update": "node scripts/update.js"
   },
   "author": "Inclusive Design Research Centre",
   "license": "BSD-3-Clause",
