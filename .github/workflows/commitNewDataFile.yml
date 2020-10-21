@@ -1,8 +1,8 @@
 name: Commit new data files published at https://data.ontario.ca
 
-on:
-  schedule:
-    - cron: "*/10 * * * *"
+# on:
+#   schedule:
+#     - cron: "*/10 * * * *"
 
 jobs:
   commitDataFile:
