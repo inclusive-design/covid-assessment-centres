@@ -1,12 +1,8 @@
 name: Commit new data files published by Ontario Digial Service
 
 on:
-  push:
-    branches: [ auto-update-script ]
-
-# on:
-#   schedule:
-#     - cron: "*/10 * * * *"
+  schedule:
+    - cron: "*/10 * * * *"
 
 jobs:
   dataUpdate:
@@ -24,6 +20,10 @@ jobs:
       id: downloadFile
       run: npm run update
 
+    # Scenarios:
+    # 1. When a new file is downloaded, the grep command returns the exit code 1 and causes the step to fail,
+    # This results in the command that sets `status` value is not reached, so status == null.
+    # 2. When a new file is not found, all commands will execute successfully and status == 0.
     - name: Check if new files are downloaded
       id: checkDownloads
       continue-on-error: true
@@ -33,7 +33,7 @@ jobs:
         echo "::set-output name=status::$?"
 
     - name: Get the output status
-      run: echo "The status was \"${{ steps.checkDownloads.outputs.status }}\""
+      run: echo "The status was ${{ steps.checkDownloads.outputs.status }}"
 
     - name: Commit the new data file and the updated latest.json
       if: steps.checkDownloads.outputs.status == null
@@ -41,7 +41,7 @@ jobs:
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"
         git add ODC/*
-        git commit -m "feat: add a published new data file from https://data.ontario.ca"
+        git commit -m "feat: add a new data file published at https://data.ontario.ca"
 
     - name: Push changes
       if: steps.checkDownloads.outputs.status == null
