@@ -25,9 +25,8 @@ jobs:
       run: npm run update
 
     # Scenarios:
-    # 1. When a new file is downloaded, the grep command returns the exit code 1 and causes the step to fail,
-    # This results in the command that sets `status` value is not reached, so status == null.
-    # 2. When a new file is not found, all commands will execute successfully and status == 0.
+    # 1. When a new file is downloaded, the grep command returns the exit code 1 and causes the step to fail;
+    # 2. When a new file is not detected, this step will complete successfully.
     - name: Check if new files are downloaded
       id: checkDownloads
       continue-on-error: true
@@ -36,10 +35,11 @@ jobs:
         git status | grep "nothing to commit"
 
     - name: Get the output status
-      run: echo "The status was ${{ steps.checkDownloads.outcome }}"
+      run: echo "Whether the file is not downloaded: ${{ steps.checkDownloads.outcome }}"
 
+    # Only commit and push into the repo when a new file is downloaded
     - name: Commit the new data file and the updated latest.json
-      if: steps.checkDownloads.outcome == "failure"
+      if: steps.checkDownloads.outcome == 'failure'
       run: |
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"
@@ -47,7 +47,7 @@ jobs:
         git commit -m "feat: add a new data file published at https://data.ontario.ca"
 
     - name: Push changes
-      if: steps.checkDownloads.outcome == "failure"
+      if: steps.checkDownloads.outcome == 'failure'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
