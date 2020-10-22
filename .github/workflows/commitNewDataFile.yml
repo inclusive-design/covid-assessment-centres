@@ -17,19 +17,23 @@ jobs:
 
     - name: Download the new data file
       id: downloadFile
+      run: npm run update
+
+    - name: Check if new files are downloaded
+      id: checkDownloads
       run: |
-        npm run update
+        git status | grep 'nothing to commit'
         echo ::set-output name=status::$?
 
     - name: Set push config
-      if: steps.downloadFile.outputs.status == 0
+      if: steps.checkDownloads.outputs.status != 0
       uses: actions/checkout@master
       with:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
     - name: Commit the new data file and the updated latest.json
-      if: steps.downloadFile.outputs.status == 0
+      if: steps.checkDownloads.outputs.status != 0
       run: |
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"
@@ -37,7 +41,7 @@ jobs:
         git commit -m "feat: add a published new data file from https://data.ontario.ca"
 
     - name: Push changes
-      if: steps.downloadFile.outputs.status == 0
+      if: steps.checkDownloads.outputs.status != 0
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
