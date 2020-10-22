@@ -26,7 +26,9 @@ jobs:
 
     - name: Check if new files are downloaded
       id: checkDownloads
-      run: git status | grep 'nothing to commit'
+      run: |
+        git status
+        git status | grep "nothing to commit"
 
     # - name: Check if new files are downloaded
     #   id: checkDownloads
