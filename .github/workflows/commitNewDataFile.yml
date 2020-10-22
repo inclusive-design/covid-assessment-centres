@@ -9,7 +9,7 @@ on:
 #     - cron: "*/10 * * * *"
 
 jobs:
-  dateUpdate:
+  dataUpdate:
     runs-on: ubuntu-latest
     steps:
     - name: Install Node.js dependencies
@@ -34,7 +34,7 @@ jobs:
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"
         git add ODC/*
-        git commit -m "feat: add a published new data file from https://data.ontario.ca" -a
+        git commit -m "feat: add a published new data file from https://data.ontario.ca"
 
     - name: Push changes
       if: steps.downloadFile.outputs.status == 0
