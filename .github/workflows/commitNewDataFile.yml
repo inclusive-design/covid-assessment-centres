@@ -1,8 +1,12 @@
 name: Commit new data files published by Ontario Digial Service
 
 on:
-  schedule:
-    - cron: "*/10 * * * *"
+  push:
+    branches: [ auto-update-script ]
+
+# on:
+#   schedule:
+#     - cron: "*/10 * * * *"
 
 jobs:
   dataUpdate:
@@ -36,7 +40,7 @@ jobs:
       run: echo "The status was ${{ steps.checkDownloads.outputs.status }}"
 
     - name: Commit the new data file and the updated latest.json
-      if: steps.checkDownloads.outputs.status == null
+      if: steps.checkDownloads.outputs.status == null && steps.checkDownloads.outputs.status != 0
       run: |
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"
@@ -44,7 +48,7 @@ jobs:
         git commit -m "feat: add a new data file published at https://data.ontario.ca"
 
     - name: Push changes
-      if: steps.checkDownloads.outputs.status == null
+      if: steps.checkDownloads.outputs.status == null && steps.checkDownloads.outputs.status != 0
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
