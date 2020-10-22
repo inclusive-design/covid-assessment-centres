@@ -26,10 +26,14 @@ jobs:
 
     - name: Check if new files are downloaded
       id: checkDownloads
-      run: |
-        git status | grep 'nothing to commit'
-        echo ::set-output name=status::$?
+      run: git status | grep 'nothing to commit'
 
+    # - name: Check if new files are downloaded
+    #   id: checkDownloads
+    #   run: |
+    #     git status | grep 'nothing to commit'
+    #     echo ::set-output name=status::$?
+    #
     - name: Commit the new data file and the updated latest.json
       if: steps.checkDownloads.outputs.status != 0
       run: |
