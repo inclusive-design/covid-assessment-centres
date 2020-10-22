@@ -93,10 +93,8 @@ async function main() {
 		await downloadDataFile(downloadURL, path.join(dataFileFolder, dataFileName));
 		fs.writeFileSync(path.join(dataFileFolder, "latest.json"), latestFileTemplate.replace("$filename", dataFileName), "utf8");
 		console.log("Done: The new data file: ", dataFileName);
-		exit 0;
 	} else {
 		console.log("Done: No new data file");
-		exit 1;
 	}
 };
 
