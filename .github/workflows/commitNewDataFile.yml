@@ -26,11 +26,14 @@ jobs:
 
     - name: Check if new files are downloaded
       id: checkDownloads
-      continue-on-error:true
+      continue-on-error: true
       run: |
         git status
         git status | grep "nothing to commit"
         echo "::set-output name=status::$?"
+
+    - name: Get the output status
+      run: echo "The status was ${{ steps.checkDownloads.outputs.status }}"
 
     - name: Commit the new data file and the updated latest.json
       if: steps.checkDownloads.outputs.status != 0
