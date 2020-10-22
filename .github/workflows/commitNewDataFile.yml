@@ -10,10 +10,10 @@ jobs:
     steps:
     - name: Download the new data file
       id: dataUpdate
-      uses: cindyli/data-update-action@v1.0.0-alpha
+      uses: cindyli/data-update-action@main
 
     - name: Get the output status
-      run: echo "The time was ${{ steps.dataUpdate.outputs.new-data-file }}"
+      run: echo "The update status was ${{ steps.dataUpdate.outputs.new-data-file }}"
 
   # push:
   #   runs-on: ubuntu-latest
