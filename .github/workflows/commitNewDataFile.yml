@@ -1,4 +1,4 @@
-name: Commit new data files published at https://data.ontario.ca
+name: Commit new data files published by Ontario Digial Service
 
 on:
   push:
@@ -12,6 +12,11 @@ jobs:
   dataUpdate:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@master
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
     - name: Install Node.js dependencies
       run: npm install
 
@@ -24,13 +29,6 @@ jobs:
       run: |
         git status | grep 'nothing to commit'
         echo ::set-output name=status::$?
-
-    - name: Set push config
-      if: steps.checkDownloads.outputs.status != 0
-      uses: actions/checkout@master
-      with:
-        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
-        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
     - name: Commit the new data file and the updated latest.json
       if: steps.checkDownloads.outputs.status != 0

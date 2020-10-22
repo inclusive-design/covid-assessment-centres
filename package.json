@@ -1,7 +1,7 @@
 {
-  "name": "data-update-github",
+  "name": "covid-assessment-centres",
   "version": "0.1.0",
-  "description": "Automatically detect data changes from the web, download and commit into this repository",
+  "description": "Contain data files for Ontario COVID-19 assessment centre locations",
   "scripts": {
     "update": "node scripts/update.js"
   },
