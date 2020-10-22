@@ -33,10 +33,10 @@ jobs:
         echo "::set-output name=status::$?"
 
     - name: Get the output status
-      run: echo "The status was ${{ steps.checkDownloads.outputs.status }}"
+      run: echo "The status was \"${{ steps.checkDownloads.outputs.status }}\""
 
     - name: Commit the new data file and the updated latest.json
-      if: steps.checkDownloads.outputs.status == ""
+      if: steps.checkDownloads.outputs.status == null
       run: |
         git config --local user.email "wecount.info@gmail.com"
         git config --local user.name "Auto Update via GitHub Action"
@@ -44,7 +44,7 @@ jobs:
         git commit -m "feat: add a published new data file from https://data.ontario.ca"
 
     - name: Push changes
-      if: steps.checkDownloads.outputs.status == ""
+      if: steps.checkDownloads.outputs.status == null
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
