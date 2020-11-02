@@ -10,6 +10,8 @@ Datasets are organized in directory by ownership and provenance. All datasets ha
 
 * `/WeCount` directory: contains all datasets used by [the WeCount project](https://wecount.inclusivedesign.ca/).
 
+* `/scripts` directory: contains scripts that merges both kinds of datasets into one.
+
 * `latest.json` in each directory: a JSON schema that indicates the latest dataset used by that ownership.
 
 ## License
