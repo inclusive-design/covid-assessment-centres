@@ -1,6 +1,6 @@
 {
 	"name": "COVID-19-testing-locations-WeCount",
-	"datapackage_version": "0.1.0",
+	"version": "0.1.0",
 	"title": "WeCount project consolidated COVID-19 assessment centre locations in Ontario",
 	"description": "Contain data files of COVID-19 assessment centre locations in Ontario. These files are consolidated used by the WeCount project.",
 	"keywords": ["Ontario", "Health", "COVID-19", "coronavirus", "COVID", "testing", "COVID-19 testing locations", "WeCount Project", "Inclusive Design Research Centre"],
@@ -8,13 +8,6 @@
 		"url": "https://creativecommons.org/licenses/by/4.0/",
 		"name": "Creative Commons Attribution 4.0 International Public License",
 		"version": "4.0"
-	}],
-	"sources": [{
-		"name": "Government of Ontario - Data Catalogue",
-		"web": "https://data.ontario.ca/dataset/covid-19-assessment-centre-locations"
-	}, {
-		"name": "WeCount Project - Inclusive Design Research Centre",
-		"web": "https://wecount.inclusivedesign.ca/"
 	}],
 	"maintainers": [{
 		"name": "WeCount Project - Inclusive Design Research Centre",

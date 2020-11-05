@@ -1,6 +1,6 @@
 {
 	"name": "COVID-19-testing-locations-ODC",
-	"datapackage_version": "0.1.0",
+	"version": "0.1.0",
 	"title": "COVID-19 assessment centre locations in Ontario",
 	"description": "Contain downloaded data files of COVID-19 assessment centre locations in Ontario. These files are downloaded from the Government of Ontario website.",
 	"keywords": ["Ontario", "Health", "COVID-19", "coronavirus", "COVID", "testing", "COVID-19 testing locations"],
