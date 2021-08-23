@@ -1,0 +1,98 @@
+{
+    type: "fluid.pipelines.WeCount-ODC",
+    parents: "fluid.pipelines.withOctokit",
+    elements: {
+        ODCConfig: {
+            type: "fluid.dataPipe.static",
+            scrapeURL: "https://data.ontario.ca/dataset/covid-19-assessment-centre-locations"
+        },
+        writeConfig: {
+            type: "fluid.dataPipe.static",
+            repoOwner: "inclusive-design",
+            repoName: "covid-assessment-centres",
+            branchName: "main",
+            ODCFolder: "ODC/",
+            mergedFolder: "merged/"
+        },
+        ODCCoordinates: { // generates members dataFileName, filePath, date, downloadURL
+            type: "fluid.dataMonitor.getODCFileCoordinates",
+            scrapeURL: "{ODCConfig}.options.scrapeURL"
+        },
+        hasNewODCFile: {
+            type: "fluid..gitFileNotExists",
+            config: "{config}.options",
+            coordinates: "{fetchODCCoordinates}.data"
+        },
+        ODC: { // No, we actually write this file, not fetch it
+            type: "fluid.fetchUrlCSV",
+            hasFile: "{hasNewODCFile}.data", // Fake dependency to short-circuit pipeline if the file is not new
+            url: "{ODCCoordinates}.data.downloadURL",
+            repoOwner: "{config}.options.repoOwner",
+            repoName: "{config}.options.repoName",
+            filePath: "{ODCCoordinates}.data.filePath"
+        },
+        WeCount: {
+            type: "fluid.fetchGitCSV",
+            repoOwner: "inclusive-design",
+            repoName: "covid-assessment-centres",
+            // TODO: This could be indirected via the "latest" system if there is again any data collection
+            filePath: "WeCount/assessment_centre_data_collection_2020_09_02.csv"
+        },
+        joined: {
+            type: "fluid.forgivingJoin",
+            left: "{WeCount}.data",
+            right: "{ODC}.data",
+            outerRight: true,
+            outputColumns: {
+                location_name: "ODC.location_name",
+                city:          "ODC.city",
+                website:       "ODC.website",
+                phone:         "ODC.phone",
+                postal_code:   "ODC.postal_code",
+                address:       "ODC.address",
+                province:      "ODC.province",
+                monday:        "ODC.monday",
+                tuesday:       "ODC.tuesday",
+                wednesday:     "ODC.wednesday",
+                thursday:      "ODC.thursday",
+                friday:        "ODC.friday",
+                latitude:      "ODC.latitude",
+                longitude:     "ODC.longitude",
+                "Accessible Entrances": "WeCount.Wheelchair-accessible entrance",
+                "Accessible Washrooms": "WeCount.Wheelchair-accessible bathrooms",
+                "Accessible Parking":   "WeCount.Accessible parking",
+                "Individual Service":   "WeCount.Personalized or individual service is offered",
+                "Wait Accommodations":  "WeCount.Queue accomodations"
+            }
+        },
+        mergedFilename: {
+            type: "fluid.dataMonitor.getMergedFilename",
+            ODCCoordinates: "{ODCCoordinates}.data",
+            WeCountFilePath: "{WeCount}.options.filePath"
+        },
+        writeFiles: {
+            type: "fluid.commitMultipleFiles",
+//            repoOwner: "inclusive-design",
+            repoOwner: "amb26",
+            repoName: "covid-assessment-centres",
+//            branchName: "main",
+            branchName: "test",
+            commitMessage: "feat: add a new data file published at https://data.ontario.ca",
+            files: [{
+                filePath: "{ODCCoordinates}.data.filePath",
+                // folder: "{writeConfig}.options.ODCFolder",
+                writeProvenance: false,
+                encoder: "fluid.encoders.writeCSV",
+                convertEntry: "fluid.encoders.writeLatest",
+                input: "{ODC}.data"
+            }, {
+                filePath: "{mergedFilenames}.data.filePath",
+                // folder: "{writeConfig}.options.mergedFolder",
+                writeProvenance: true,
+                encoder: "fluid.encoders.writeCSV",
+                convertEntry: "fluid.encoders.writeLatest",
+                input: "{joined}.data"
+            }]
+        }
+    }
+}

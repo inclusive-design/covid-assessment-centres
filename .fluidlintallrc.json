@@ -1,0 +1,16 @@
+{
+    "sources": {
+        "md":    [ "./*.md","./docs/**/*.md"],
+        "js":    ["./pipes/**/*.js", "./pipelines/**/*.js", "./*.js"],
+        "json":  ["./pipes/**/*.json", "./pipelines/**/*.json", "./*.json"],
+        "json5": ["./pipes/**/*.json5", "./pipelines/**/*.json5", "./*.json5"],
+        "other": ["./.*"]
+    },
+    "markdownlint": {
+        "options": {
+            "config": {
+                "no-bare-urls": false
+            }
+        }
+    }
+}
