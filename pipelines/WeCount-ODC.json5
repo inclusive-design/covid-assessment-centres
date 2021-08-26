@@ -3,33 +3,33 @@
     parents: "fluid.pipelines.withOctokit",
     elements: {
         ODCConfig: {
-            type: "fluid.dataPipe.static",
+            type: "fluid.component",
             scrapeURL: "https://data.ontario.ca/dataset/covid-19-assessment-centre-locations"
         },
-        writeConfig: {
-            type: "fluid.dataPipe.static",
+        gitConfig: {
+            type: "fluid.component",
             repoOwner: "inclusive-design",
             repoName: "covid-assessment-centres",
             branchName: "main",
             ODCFolder: "ODC/",
             mergedFolder: "merged/"
         },
-        ODCCoordinates: { // generates members dataFileName, filePath, date, downloadURL
+        ODCCoordinates: { // generates members dataFileName, date, downloadURL
             type: "fluid.dataMonitor.getODCFileCoordinates",
-            scrapeURL: "{ODCConfig}.options.scrapeURL"
+            scrapeURL: "{ODCConfig}.scrapeURL",
+            folder: "{gitConfig}.ODCFolder"
         },
         hasNewODCFile: {
-            type: "fluid..gitFileNotExists",
-            config: "{config}.options",
-            coordinates: "{fetchODCCoordinates}.data"
+            type: "fluid.dataPipe.gitFileNotExists",
+            repoOwner: "{gitConfig}.repoOwner",
+            repoName: "{gitConfig}.repoName",
+            branchName: "{gitConfig}.branchName",
+            filePath: "{ODCCoordinates}.data.dataFileName"
         },
-        ODC: { // No, we actually write this file, not fetch it
+        ODC: {
             type: "fluid.fetchUrlCSV",
             hasFile: "{hasNewODCFile}.data", // Fake dependency to short-circuit pipeline if the file is not new
-            url: "{ODCCoordinates}.data.downloadURL",
-            repoOwner: "{config}.options.repoOwner",
-            repoName: "{config}.options.repoName",
-            filePath: "{ODCCoordinates}.data.filePath"
+            url: "{ODCCoordinates}.data.downloadURL"
         },
         WeCount: {
             type: "fluid.fetchGitCSV",
@@ -68,10 +68,11 @@
         mergedFilename: {
             type: "fluid.dataMonitor.getMergedFilename",
             ODCCoordinates: "{ODCCoordinates}.data",
-            WeCountFilePath: "{WeCount}.options.filePath"
+            WeCountFilePath: "{WeCount}.filePath",
+            folder: "{gitConfig}.mergedFolder"
         },
         writeFiles: {
-            type: "fluid.commitMultipleFiles",
+            type: "fluid.dataPipe.commitMultipleFiles",
 //            repoOwner: "inclusive-design",
             repoOwner: "amb26",
             repoName: "covid-assessment-centres",
@@ -79,18 +80,18 @@
             branchName: "test",
             commitMessage: "feat: add a new data file published at https://data.ontario.ca",
             files: [{
-                filePath: "{ODCCoordinates}.data.filePath",
-                // folder: "{writeConfig}.options.ODCFolder",
+                filePath: "{ODCCoordinates}.data.dataFileName",
+                // folder: "{gitConfig}.options.ODCFolder",
                 writeProvenance: false,
-                encoder: "fluid.encoders.writeCSV",
-                convertEntry: "fluid.encoders.writeLatest",
+                encoder: "fluid.data.encodeCSV",
+                convertEntry: "fluid.dataMonitor.writeLatest",
                 input: "{ODC}.data"
             }, {
-                filePath: "{mergedFilenames}.data.filePath",
-                // folder: "{writeConfig}.options.mergedFolder",
+                filePath: "{mergedFilename}.data.filePath",
+                // folder: "{gitConfig}.options.mergedFolder",
                 writeProvenance: true,
-                encoder: "fluid.encoders.writeCSV",
-                convertEntry: "fluid.encoders.writeLatest",
+                encoder: "fluid.data.encodeCSV",
+                convertEntry: "fluid.dataMonitor.writeLatest",
                 input: "{joined}.data"
             }]
         }

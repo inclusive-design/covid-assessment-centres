@@ -5,9 +5,11 @@ const path = require("path");
 const axios = require("axios");
 const JSDOM = require("jsdom").JSDOM;
 
-const fluid = require("fluid");
+const fluid = require("infusion");
 
 const latestFileTemplate = "{\n\t\"fileName\": \"$filename\"\n}\n";
+
+fluid.registerNamespace("fluid.dataMonitor");
 
 /**
  * Scrape the download link and date of last update from the ODS repository page
@@ -63,8 +65,8 @@ fluid.dataMonitor.trunkName = function (path) {
 
 function generateMergedFileName(ODCDate, assessmentFile) {
     var trunkName = fluid.dataMonitor.trunkName(assessmentFile);
-    var assessDate = trunkName.slice(-11);
-    return "merged_" + ODCDate.replace(/-/g, "_") + assessDate + ".csv";
+    var assessDate = trunkName.slice(-10);
+    return "merged_ODC_" + ODCDate.replace(/-/g, "_") + "_WeCount_" + assessDate + ".csv";
 };
 
 fluid.defaults("fluid.dataMonitor.getMergedFilename", {
@@ -75,11 +77,12 @@ fluid.defaults("fluid.dataMonitor.getMergedFilename", {
  * @param {Object} options - Accepts a structure
  *     ODCCoordinates: "{ODCCoordinates}.data"
  *     WeCountFilePath: "{WeCount}.options.filePath"
+       folder: "{gitConfig}.mergedFolder
  * @return {Object} A structure holding the required path in member `filePath`.
  */
 fluid.dataMonitor.getMergedFilename = function (options) {
     return {
-        filePath: generateMergedFileName(options.ODCCoordinates.fileName, options.WeCountFilePath)
+        filePath: options.folder + generateMergedFileName(options.ODCCoordinates.date, options.WeCountFilePath)
     };
 };
 
@@ -88,10 +91,10 @@ fluid.dataMonitor.getMergedFilename = function (options) {
  * @param {FileEntry} fileOptions - Overall file options for the file being written
  * @return {FileEntry} An additional `FileEntry` element recording the additional index file to be written
  */
-fluid.encoders.writeLatest = function (fileOptions) {
+fluid.dataMonitor.writeLatest = function (fileOptions) {
     var parsed = path.posix.parse(fileOptions.filePath);
     return {
-        filePath: parsed.dir + "/latest.json",
+        path: parsed.dir + "/latest.json",
         content: latestFileTemplate.replace("$filename", parsed.base)
     };
 };
@@ -113,6 +116,6 @@ fluid.dataMonitor.getODCFileCoordinates = async function (options) {
     let scrapeResults = await fluid.dataMonitor.scrapeRepositoryPage(options.scrapeURL);
     return {
         ...scrapeResults,
-        dataFileName: fluid.dataMonitor.generateODCFileName(scrapeResults.date)
+        dataFileName: options.folder + fluid.dataMonitor.generateODCFileName(scrapeResults.date)
     };
 };
