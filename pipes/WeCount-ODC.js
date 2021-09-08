@@ -86,6 +86,13 @@ fluid.dataMonitor.getMergedFilename = function (options) {
     };
 };
 
+/**
+ * Representation of a pathed file and its contents (generally on its way to be written, e.g. by gitOpsApi's commitMultipleFiles
+ * @typedef {Object} FileEntry
+ * @param {String} path - The path of the data to be written
+ * @param {String} content - The content of the data to be written
+ */
+
 /** Given a pending set of file writes, append a small index file named `latest.json` determining which is the
  * latest dated file just written.
  * @param {FileEntry} fileOptions - Overall file options for the file being written

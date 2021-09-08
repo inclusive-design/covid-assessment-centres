@@ -1,0 +1,4 @@
+{ // Run the main (CI) pipeline configuration
+    loadDirectory: "%covid-assessment-centres/pipelines",
+    execPipeline: ["fluid.pipelines.WeCount-ODC", "fluid.pipelines.WeCount-ODC-synthetic"]
+}

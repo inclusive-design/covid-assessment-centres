@@ -1,0 +1,4 @@
+{ // Run a user's pipeline configuration for local testing - please edit your details in WeCount-ODC-userConfig.json5
+    loadDirectory: "%covid-assessment-centres/pipelines",
+    execPipeline: ["fluid.pipelines.WeCount-ODC", "fluid.pipelines.WeCount-ODC-synthetic", "fluid.pipelines.WeCount-ODC-userConfig"]
+}

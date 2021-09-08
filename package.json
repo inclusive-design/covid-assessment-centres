@@ -3,7 +3,10 @@
     "version": "0.2.0",
     "description": "Data files and scripts for fetching and merging Ontario COVID-19 assessment centre locations",
     "scripts": {
-        "runPipeline": "node runPipeline.js",
+        "runPipeline": "runFluidPipeline runConfig.json5",
+        "runUserPipeline": "runFluidPipeline runUserConfig.json5",
+        "runPipelineDebug": "node --inspect-brk node_modules/forgiving-data/src/cli.js runConfig.json5",
+        "runUserPipelineDebug": "node --inspect-brk node_modules/forgiving-data/src/cli.js runUserConfig.json5",
         "lint": "fluid-lint-all"
     },
     "main": "index.js",
@@ -12,7 +15,7 @@
     "dependencies": {
         "axios": "0.21.0",
         "git-ops-api": "1.0.0",
-        "forgiving-data": "amb26/forgiving-data#monitor1",
+        "forgiving-data": "0.4.0-dev.20210908T212157Z.57510f5.monitor1",
         "infusion": "4.0.0-dev.20210622T193827Z.ac6adb829.FLUID-6629",
         "jsdom": "16.4.0"
     },

@@ -1,6 +1,7 @@
 {
     type: "fluid.pipelines.WeCount-ODC",
     parents: "fluid.pipelines.withOctokit",
+    require: "%covid-assessment-centres/pipes/WeCount-ODC.js",
     elements: {
         ODCConfig: {
             type: "fluid.component",
@@ -73,22 +74,18 @@
         },
         writeFiles: {
             type: "fluid.dataPipe.commitMultipleFiles",
-//            repoOwner: "inclusive-design",
-            repoOwner: "amb26",
-            repoName: "covid-assessment-centres",
-//            branchName: "main",
-            branchName: "test",
+            repoOwner: "{gitConfig}.repoOwner",
+            repoName: "{gitConfig}.repoName",
+            branchName: "{gitConfig}.branchName",
             commitMessage: "feat: add a new data file published at https://data.ontario.ca",
             files: [{
                 filePath: "{ODCCoordinates}.data.dataFileName",
-                // folder: "{gitConfig}.options.ODCFolder",
                 writeProvenance: false,
                 encoder: "fluid.data.encodeCSV",
                 convertEntry: "fluid.dataMonitor.writeLatest",
                 input: "{ODC}.data"
             }, {
                 filePath: "{mergedFilename}.data.filePath",
-                // folder: "{gitConfig}.options.mergedFolder",
                 writeProvenance: true,
                 encoder: "fluid.data.encodeCSV",
                 convertEntry: "fluid.dataMonitor.writeLatest",
