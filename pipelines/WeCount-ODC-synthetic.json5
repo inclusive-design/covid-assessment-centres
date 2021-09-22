@@ -1,0 +1,18 @@
+{ // copied from %forgiving-data/demos/pipelines/WeCount-ODC-synthetic.json5
+    type: "fluid.pipelines.WeCount-ODC-synthetic",
+    parents: "fluid.pipelines.WeCount-ODC",
+    require: "%forgiving-data/demo/pipes/inventCovid.js",
+    elements: {
+        joined: {
+            type: "fluid.compoundElement",
+            elements: {
+                invent: {
+                    type: "fluid.covidMap.inventAccessibilityData",
+                    input: "{joined}.data",
+                    seed: 0
+                }
+            },
+            return: "invent"
+        }
+    }
+}

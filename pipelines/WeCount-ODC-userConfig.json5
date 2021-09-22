@@ -1,0 +1,11 @@
+{
+    type: "fluid.pipelines.WeCount-ODC-userConfig",
+    elements: {
+        gitConfig: {
+            type: "fluid.component",
+            repoOwner: "amb26",
+            repoName: "covid-assessment-centres",
+            branchName: "test"
+        }
+    }
+}

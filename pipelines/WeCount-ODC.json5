@@ -1,0 +1,96 @@
+{
+    type: "fluid.pipelines.WeCount-ODC",
+    parents: "fluid.pipelines.withOctokit",
+    require: "%covid-assessment-centres/pipes/WeCount-ODC.js",
+    elements: {
+        ODCConfig: {
+            type: "fluid.component",
+            scrapeURL: "https://data.ontario.ca/dataset/covid-19-assessment-centre-locations"
+        },
+        gitConfig: {
+            type: "fluid.component",
+            repoOwner: "inclusive-design",
+            repoName: "covid-assessment-centres",
+            branchName: "main",
+            ODCFolder: "ODC/",
+            mergedFolder: "merged/"
+        },
+        ODCCoordinates: { // generates members dataFileName, date, downloadURL
+            type: "fluid.dataMonitor.getODCFileCoordinates",
+            scrapeURL: "{ODCConfig}.scrapeURL",
+            folder: "{gitConfig}.ODCFolder"
+        },
+        hasNewODCFile: {
+            type: "fluid.dataPipe.gitFileNotExists",
+            repoOwner: "{gitConfig}.repoOwner",
+            repoName: "{gitConfig}.repoName",
+            branchName: "{gitConfig}.branchName",
+            filePath: "{ODCCoordinates}.data.dataFileName"
+        },
+        ODC: {
+            type: "fluid.fetchUrlCSV",
+            hasFile: "{hasNewODCFile}.data", // Fake dependency to short-circuit pipeline if the file is not new
+            url: "{ODCCoordinates}.data.downloadURL"
+        },
+        WeCount: {
+            type: "fluid.fetchGitCSV",
+            repoOwner: "inclusive-design",
+            repoName: "covid-assessment-centres",
+            // TODO: This could be indirected via the "latest" system if there is again any data collection
+            filePath: "WeCount/assessment_centre_data_collection_2020_09_02.csv"
+        },
+        joined: {
+            type: "fluid.forgivingJoin",
+            left: "{WeCount}.data",
+            right: "{ODC}.data",
+            outerRight: true,
+            outputColumns: {
+                location_name: "ODC.location_name",
+                city:          "ODC.city",
+                website:       "ODC.website",
+                phone:         "ODC.phone",
+                postal_code:   "ODC.postal_code",
+                address:       "ODC.address",
+                province:      "ODC.province",
+                monday:        "ODC.monday",
+                tuesday:       "ODC.tuesday",
+                wednesday:     "ODC.wednesday",
+                thursday:      "ODC.thursday",
+                friday:        "ODC.friday",
+                latitude:      "ODC.latitude",
+                longitude:     "ODC.longitude",
+                "Accessible Entrances": "WeCount.Wheelchair-accessible entrance",
+                "Accessible Washrooms": "WeCount.Wheelchair-accessible bathrooms",
+                "Accessible Parking":   "WeCount.Accessible parking",
+                "Individual Service":   "WeCount.Personalized or individual service is offered",
+                "Wait Accommodations":  "WeCount.Queue accomodations"
+            }
+        },
+        mergedFilename: {
+            type: "fluid.dataMonitor.getMergedFilename",
+            ODCCoordinates: "{ODCCoordinates}.data",
+            WeCountFilePath: "{WeCount}.filePath",
+            folder: "{gitConfig}.mergedFolder"
+        },
+        writeFiles: {
+            type: "fluid.dataPipe.commitMultipleFiles",
+            repoOwner: "{gitConfig}.repoOwner",
+            repoName: "{gitConfig}.repoName",
+            branchName: "{gitConfig}.branchName",
+            commitMessage: "feat: add a new data file published at https://data.ontario.ca",
+            files: [{
+                filePath: "{ODCCoordinates}.data.dataFileName",
+                writeProvenance: false,
+                encoder: "fluid.data.encodeCSV",
+                convertEntry: "fluid.dataMonitor.writeLatest",
+                input: "{ODC}.data"
+            }, {
+                filePath: "{mergedFilename}.data.filePath",
+                writeProvenance: true,
+                encoder: "fluid.data.encodeCSV",
+                convertEntry: "fluid.dataMonitor.writeLatest",
+                input: "{joined}.data"
+            }]
+        }
+    }
+}
