@@ -1,6 +1,6 @@
 {
     "name": "covid-assessment-centres",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Data files and scripts for fetching and merging Ontario COVID-19 assessment centre locations",
     "scripts": {
         "runPipeline": "runFluidPipeline runConfig.json5",
@@ -13,15 +13,15 @@
     "author": "Inclusive Design Research Centre",
     "license": "BSD-3-Clause",
     "dependencies": {
-        "axios": "0.21.0",
+        "axios": "0.21.4",
         "git-ops-api": "1.0.0",
-        "forgiving-data": "0.4.0-dev.20210908T212157Z.57510f5.monitor1",
+        "forgiving-data": "1.0.0",
         "infusion": "4.0.0-dev.20210622T193827Z.ac6adb829.FLUID-6629",
-        "jsdom": "16.4.0"
+        "jsdom": "17.0.0"
     },
     "devDependencies": {
-        "eslint": "7.30.0",
+        "eslint": "7.32.0",
         "eslint-config-fluid": "2.0.0",
-        "fluid-lint-all": "1.1.4"
+        "fluid-lint-all": "1.1.5"
     }
 }
