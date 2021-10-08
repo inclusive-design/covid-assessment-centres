@@ -126,3 +126,9 @@ fluid.dataMonitor.getODCFileCoordinates = async function (options) {
         dataFileName: options.folder + fluid.dataMonitor.generateODCFileName(scrapeResults.date)
     };
 };
+
+// As of 2021/10/06 the ODC dataset has started to contain corrupt rows with blanks for "city"
+// We also take this opportunity to filter out centres which are not active
+fluid.dataMonitor.filterBadCentres = function (row) {
+    return row.city && row.active !== "No";
+};

@@ -1,6 +1,6 @@
 {
     "name": "covid-assessment-centres",
-    "version": "0.3.0",
+    "version": "1.0.0",
     "description": "Data files and scripts for fetching and merging Ontario COVID-19 assessment centre locations",
     "scripts": {
         "runPipeline": "runFluidPipeline runConfig.json5",
@@ -15,7 +15,7 @@
     "dependencies": {
         "axios": "0.22.0",
         "git-ops-api": "1.0.0",
-        "forgiving-data": "1.1.0",
+        "forgiving-data": "1.4.0",
         "infusion": "4.0.0-dev.20210622T193827Z.ac6adb829.FLUID-6629",
         "jsdom": "17.0.0"
     },

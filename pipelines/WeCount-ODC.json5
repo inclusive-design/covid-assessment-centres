@@ -28,9 +28,19 @@
             filePath: "{ODCCoordinates}.data.dataFileName"
         },
         ODC: {
-            type: "fluid.fetchUrlCSV",
-            hasFile: "{hasNewODCFile}.data", // Fake dependency to short-circuit pipeline if the file is not new
-            url: "{ODCCoordinates}.data.downloadURL"
+            type: "fluid.compoundElement",
+            elements: {
+                ODC: {
+                    type: "fluid.fetchUrlCSV",
+                    hasFile: "{hasNewODCFile}.data", // Fake dependency to short-circuit pipeline if the file is not new
+                    url: "{ODCCoordinates}.data.downloadURL"
+                },
+                filter: {
+                    type: "fluid.dataPipe.filter",
+                    func: "fluid.dataMonitor.filterBadCentres",
+                    input: "{ODC}.data"
+                }
+            }
         },
         WeCount: {
             type: "fluid.fetchGitCSV",
