@@ -1,0 +1,45 @@
+{
+    "WeCount": {
+        "repoOwner": "inclusive-design",
+        "repoName": "covid-assessment-centres",
+        "filePath": "WeCount/assessment_centre_data_collection_2020_09_02.csv",
+        "gradeNames": [],
+        "type": "fluid.fetchGitCSV",
+        "commitInfo": {
+            "author": {
+                "name": "Cindy Qi Li",
+                "email": "cli@ocadu.ca",
+                "date": "2020-10-07T12:46:32Z"
+            },
+            "committer": {
+                "name": "Cindy Qi Li",
+                "email": "cli@ocadu.ca",
+                "date": "2020-10-07T12:46:32Z"
+            },
+            "message": "fix: retain the WeCount csv filename as what's in the master branch",
+            "tree": {
+                "sha": "6e2f734d500914681f73743e5127412001666ec7",
+                "url": "https://api.github.com/repos/inclusive-design/covid-assessment-centres/git/trees/6e2f734d500914681f73743e5127412001666ec7"
+            },
+            "url": "https://api.github.com/repos/inclusive-design/covid-assessment-centres/git/commits/45c06ce4643985247039b37a2f255230a1cff3a9",
+            "comment_count": 0,
+            "verification": {
+                "verified": false,
+                "reason": "unsigned",
+                "signature": null,
+                "payload": null
+            }
+        }
+    },
+    "ODC": {
+        "gradeNames": [],
+        "type": "fluid.fetchUrlCSV",
+        "url": "https://data.ontario.ca/dataset/8ba078b2-ca9b-44c1-b5db-9674d85421f9/resource/c60993bb-3988-4648-9be9-398dee480514/download/assessment_centre_locations.csv",
+        "fetchedAt": "2021-11-23T23:02:05.319Z"
+    },
+    "joined.invent": {
+        "seed": 0,
+        "gradeNames": [],
+        "type": "fluid.covidMap.inventAccessibilityData"
+    }
+}
